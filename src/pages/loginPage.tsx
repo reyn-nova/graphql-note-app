@@ -47,10 +47,10 @@ function LoginPage() {
           borderRadius: 20,
           display: 'flex',
           flexDirection: 'column',
-          height: 350,
+          height: 400,
           justifyContent: 'center',
           padding: 40,
-          width: 350,
+          width: 400,
         }}
       >
         <h1>
