@@ -1,5 +1,8 @@
+import { useEffect } from 'react';
+
 import { gql, useApolloClient } from '@apollo/client';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 const LOGIN_MUTATION = gql`
   mutation Login($username: String!, $password: String!) {
@@ -9,6 +12,7 @@ const LOGIN_MUTATION = gql`
 
 function LoginPage() {
   const apolloClient = useApolloClient();
+  const navigate = useNavigate()
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -16,16 +20,27 @@ function LoginPage() {
       password: ''
     },
   });
-  
 
   const onSubmit = async (formData) => {
-    const { data } = await apolloClient.mutate({
-      mutation: LOGIN_MUTATION,
-      variables: formData
-    });
-
-    alert(`Authorization key: ${data?.login}`);
+    try {
+        const { data } = await apolloClient.mutate({
+          mutation: LOGIN_MUTATION,
+          variables: formData
+        });
+    
+        localStorage.setItem('LOGIN_KEY', data?.login);
+    
+        navigate('/')
+    } catch (err) {
+        alert(JSON.stringify(err, null, 2))
+    }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem('LOGIN_KEY')) {
+        navigate('/')
+    }
+  }, [navigate])
 
   return (
     <div

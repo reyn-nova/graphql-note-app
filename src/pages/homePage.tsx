@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
+
 import { gql, useQuery } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
 
 const LIST_NOTES_QUERY = gql`
     query ListNotes {
@@ -14,7 +17,21 @@ const LIST_NOTES_QUERY = gql`
 `
 
 const HomePage = () => {
+    const navigate = useNavigate()
+
     const { data } = useQuery(LIST_NOTES_QUERY)
+
+    const logOut = () => {
+        localStorage.removeItem('LOGIN_KEY')
+
+        navigate('/login')
+    }
+
+    useEffect(() => {
+        if (localStorage.getItem('LOGIN_KEY') === null) {
+            navigate('/login')
+        }
+    }, [navigate])
 
   return (
     <div
@@ -57,6 +74,7 @@ const HomePage = () => {
                     color: 'red',
                     cursor: 'pointer'
                 }}
+                onClick={logOut}
             >
                 Log out
             </a>
